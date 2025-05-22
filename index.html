@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username">
+                <span class="error-message" id="usernameError">Username is required</span>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+                <span class="error-message" id="passwordError">Password is required</span>
+            </div>
+
+            <button type="submit">Sign In</button>
+            <div class="success-message" id="successMessage">Login successful!</div>
+        </form>
+
+        <div class="forgot-password">
+            <a href="#">Forgot password?</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+        const successMessage = document.getElementById('successMessage');
+    
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            let isValid = true;
+    
+            // Reset error messages
+            usernameError.style.display = 'none';
+            passwordError.style.display = 'none';
+    
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+    
+            if (username === '') {
+                usernameError.style.display = 'block';
+                isValid = false;
+            }
+    
+            if (password === '') {
+                passwordError.style.display = 'block';
+                isValid = false;
+            }
+    
+            if (password.length > 0 && password.length < 6) {
+                passwordError.textContent = 'Password must be at least 6 characters';
+                passwordError.style.display = 'block';
+                isValid = false;
+            }
+    
+            if (isValid) {
+                try {
+                    const response = await login(username, password);
+                    const token = response.token;
+    
+                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('isLoggedIn', 'true');
+    
+                    successMessage.style.display = 'block';
+    
+                    setTimeout(() => {
+                        window.location.href = 'control.html';
+                    }, 1000);
+                } catch (error) {
+                    passwordError.textContent = 'Invalid username or password';
+                    passwordError.style.display = 'block';
+                }
+            }
+        });
+    </script>
+    
+    <script src="api.js"></script>
+
+</body>
+</html>
