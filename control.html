@@ -1,143 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Device Controller</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Controller</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f0f0f0;
-        }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f0f0;
+    }
 
-        .controller-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+    .controller-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
 
-        h1 {
-            color: #333;
-            margin-bottom: 2rem;
-        }
+    h1 {
+      color: #333;
+      margin-bottom: 2rem;
+    }
 
-        .control-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
+    .control-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
 
-        button {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
+    button {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
 
-        #onBtn {
-            background-color: #4CAF50;
-            color: white;
-        }
+    #onBtn {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-        #onBtn.active {
-            background-color: #45a049;
-            box-shadow: 0 0 15px rgba(76,175,80,0.4);
-        }
+    #onBtn.active {
+      background-color: #45a049;
+      box-shadow: 0 0 15px rgba(76,175,80,0.4);
+    }
 
-        #offBtn {
-            background-color: #f44336;
-            color: white;
-        }
+    #offBtn {
+      background-color: #f44336;
+      color: white;
+    }
 
-        #offBtn.active {
-            background-color: #da190b;
-            box-shadow: 0 0 15px rgba(244,67,54,0.4);
-        }
+    #offBtn.active {
+      background-color: #da190b;
+      box-shadow: 0 0 15px rgba(244,67,54,0.4);
+    }
 
-        .status {
-            margin-top: 2rem;
-            padding: 1rem;
-            border-radius: 8px;
-        }
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+    }
 
-        .status.active {
-            background-color: #4CAF50;
-            color: white;
-        }
+    .status.active {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-        .status.inactive {
-            background-color: #f44336;
-            color: white;
-        }
-    </style>
+    .status.inactive {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <div class="controller-container">
-        <h1>Device Controller</h1>
-        <div class="control-buttons">
-            <button id="onBtn" onclick="turnOn()">ON</button>
-            <button id="offBtn" onclick="turnOff()">OFF</button>
-        </div>
-        <div id="status" class="status inactive">Status: OFF</div>
+  <div class="controller-container">
+    <h1>Device Controller</h1>
+    <div class="control-buttons">
+      <button id="onBtn" onclick="turnOn()">ON</button>
+      <button id="offBtn" onclick="turnOff()">OFF</button>
     </div>
+    <div id="status" class="status inactive">Status: OFF</div>
+  </div>
 
-    <script>
-        let isOn = false;
-        const statusDiv = document.getElementById('status');
-        const onBtn = document.getElementById('onBtn');
-        const offBtn = document.getElementById('offBtn');
+  <script src="api.js"></script>
+  <script>
+    const statusDiv = document.getElementById('status');
+    const onBtn = document.getElementById('onBtn');
+    const offBtn = document.getElementById('offBtn');
 
-        function turnOn() {
-            if (!isOn) {
-                isOn = true;
-                statusDiv.textContent = "Status: ON";
-                statusDiv.className = "status active";
-                onBtn.classList.add('active');
-                offBtn.classList.remove('active');
-                
-                // Add your actual ON logic here
-                console.log("Device turned ON");
-            }
-        }
+    function updateUI(isOn) {
+      if (isOn) {
+        statusDiv.textContent = "Status: ON";
+        statusDiv.className = "status active";
+        onBtn.classList.add('active');
+        offBtn.classList.remove('active');
+      } else {
+        statusDiv.textContent = "Status: OFF";
+        statusDiv.className = "status inactive";
+        offBtn.classList.add('active');
+        onBtn.classList.remove('active');
+      }
+    }
 
-        function turnOff() {
-            if (isOn) {
-                isOn = false;
-                statusDiv.textContent = "Status: OFF";
-                statusDiv.className = "status inactive";
-                offBtn.classList.add('active');
-                onBtn.classList.remove('active');
-                
-                // Add your actual OFF logic here
-                console.log("Device turned OFF");
-            }
-        }
+    async function turnOn() {
+      await sendCommand("on");
+      updateUI(true);
+    }
 
-        // Optional: Add localStorage to remember state
-        window.addEventListener('load', () => {
-            const savedState = localStorage.getItem('deviceState');
-            if (savedState === 'ON') {
-                turnOn();
-            }
-        });
+    async function turnOff() {
+      await sendCommand("off");
+      updateUI(false);
+    }
 
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('deviceState', isOn ? 'ON' : 'OFF');
-        });
-    </script>
+    async function checkStatus() {
+      const data = await getDeviceStats();
+      if (data?.status === "on") {
+        updateUI(true);
+      } else {
+        updateUI(false);
+      }
+    }
+
+    // Автоматична проверка на всеки 5 секунди
+    setInterval(checkStatus, 5000);
+
+    // Проверка при зареждане на страницата
+    window.addEventListener("load", checkStatus);
+  </script>
 </body>
 </html>
